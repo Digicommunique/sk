@@ -1,0 +1,6 @@
+{
+  "name": "Propex360",
+  "description": "Complete 360° Property & Service Hub for buying, selling, renting, professional services, and administrative control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
