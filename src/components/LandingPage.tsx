@@ -4,10 +4,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building, Sparkles, Shield, Zap, TrendingUp, CheckCircle, 
-  ArrowRight, Heart, Database, Lock, Globe, Server
+  ArrowRight, Heart, Database, Lock, Globe, Server, X, Star, Tag, ChevronRight
 } from 'lucide-react';
 import { Property, ServiceProviderItem } from '../types';
 
@@ -25,6 +25,9 @@ export default function LandingPage({ onEnterApp, properties, serviceProviders }
     "KYC match: Resident broker Aadhaar logged.",
     "Ledger: Skyline Heights Premium approved."
   ]);
+
+  // Active navigation tab detail overlay state
+  const [activeTab, setActiveTab] = useState<'features' | 'providers' | 'pricing' | 'testimonials' | null>(null);
 
   useEffect(() => {
     const defaultEvents = [
@@ -72,13 +75,37 @@ export default function LandingPage({ onEnterApp, properties, serviceProviders }
 
         {/* Center Pill Menu (Image 1 replica) */}
         <nav className="flex items-center gap-2 px-5 py-2.5 bg-slate-950/45 border border-white/10 rounded-full text-slate-300 text-xs font-semibold backdrop-blur-md">
-          <span className="hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5">Features</span>
+          <button 
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'features' ? null : 'features')}
+            className={`hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5 outline-none focus:outline-none bg-transparent ${activeTab === 'features' ? 'text-[#00f59b] font-extrabold' : ''}`}
+          >
+            Features
+          </button>
           <span className="text-white/20 select-none">|</span>
-          <span className="hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5 col">Service Providers</span>
+          <button 
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'providers' ? null : 'providers')}
+            className={`hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5 outline-none focus:outline-none bg-transparent ${activeTab === 'providers' ? 'text-[#00f59b] font-extrabold' : ''}`}
+          >
+            Service Providers
+          </button>
           <span className="text-white/20 select-none">|</span>
-          <span className="hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5">Pricing Plans</span>
+          <button 
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'pricing' ? null : 'pricing')}
+            className={`hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5 outline-none focus:outline-none bg-transparent ${activeTab === 'pricing' ? 'text-[#00f59b] font-extrabold' : ''}`}
+          >
+            Pricing Plans
+          </button>
           <span className="text-white/20 select-none">|</span>
-          <span className="hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5">Testimonials</span>
+          <button 
+            type="button"
+            onClick={() => setActiveTab(activeTab === 'testimonials' ? null : 'testimonials')}
+            className={`hover:text-[#00f59b] cursor-pointer transition-colors block px-2.5 outline-none focus:outline-none bg-transparent ${activeTab === 'testimonials' ? 'text-[#00f59b] font-extrabold' : ''}`}
+          >
+            Testimonials
+          </button>
         </nav>
 
         {/* Action Button */}
@@ -229,6 +256,385 @@ export default function LandingPage({ onEnterApp, properties, serviceProviders }
 
         </div>
       </main>
+
+      {/* 🔮 INTERACTIVE EXPANSION TABS OVERLAY PANEL */}
+      <AnimatePresence>
+        {activeTab && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            
+            {/* Modal Box */}
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ duration: 0.2 }}
+              className="bg-slate-900/90 border border-white/10 rounded-[2.5rem] w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl relative"
+            >
+              
+              {/* Dynamic top-edge decoration bar corresponding to active tab */}
+              <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${
+                activeTab === 'features' ? 'from-emerald-400 to-[#00f59b]' : 
+                activeTab === 'providers' ? 'from-blue-400 to-indigo-500' : 
+                activeTab === 'pricing' ? 'from-amber-400 to-orange-500' : 
+                'from-pink-400 to-[#ea7ab1]'
+              }`} />
+
+              {/* Modal Core Header */}
+              <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-white/5 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest block">Propex 360 Workspace Information</span>
+                  <h3 className="text-xl sm:text-2xl font-black text-white font-display tracking-tight flex items-center gap-2">
+                    {activeTab === 'features' && <><Sparkles className="w-5 h-5 text-emerald-400" /> Platform Core Features</>}
+                    {activeTab === 'providers' && <><Building className="w-5 h-5 text-blue-400" /> Vetted Property Services</>}
+                    {activeTab === 'pricing' && <><Tag className="w-5 h-5 text-amber-400" /> Dynamic Membership Tiers</>}
+                    {activeTab === 'testimonials' && <><Heart className="w-5 h-5 text-pink-400" /> Trusted Member Stories</>}
+                  </h3>
+                </div>
+                
+                {/* Close Button */}
+                <button 
+                  onClick={() => setActiveTab(null)}
+                  className="bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white p-2.5 rounded-2xl transition-colors cursor-pointer outline-none focus:outline-none"
+                  title="Close panel overlay"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Navigation Sub-Pills for seamless in-modal switching */}
+              <div className="px-6 sm:px-8 py-3 bg-slate-950/25 border-b border-white/5 flex items-center gap-1.5 overflow-x-auto select-none no-scrollbar">
+                {[
+                  { id: 'features', label: 'Platform Features', color: 'bg-emerald-500/10 border-emerald-500/20 text-[#00f59b]' },
+                  { id: 'providers', label: 'Service Experts Directory', color: 'bg-blue-500/10 border-blue-500/20 text-blue-400' },
+                  { id: 'pricing', label: 'Premium Pricing plans', color: 'bg-amber-500/10 border-amber-500/20 text-amber-400' },
+                  { id: 'testimonials', label: 'Success Testimonials', color: 'bg-pink-500/10 border-pink-500/20 text-pink-400' }
+                ].map((pill) => (
+                  <button
+                    key={pill.id}
+                    onClick={() => setActiveTab(pill.id as any)}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border whitespace-nowrap outline-none focus:outline-none ${
+                      activeTab === pill.id 
+                        ? pill.color + ' ring-1 ring-white/10 scale-102' 
+                        : 'border-transparent text-slate-400 hover:text-white bg-transparent'
+                    }`}
+                  >
+                    {pill.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Modal Scrollable Content Area */}
+              <div className="p-6 sm:p-8 overflow-y-auto flex-1 bg-slate-950/50">
+                
+                {/* 1. FEATURES TAB CONTENT */}
+                {activeTab === 'features' && (
+                  <div className="space-y-6">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-medium">
+                      Propex360 provides a direct ledger bridging buyers, renters, and licensed experts. No brokers inflating price commissions, just absolute peer-to-peer workspace clarity.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      
+                      {/* Feature Item 1 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 hover:border-emerald-500/20 transition-all text-left">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 mb-3">
+                          <Building className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-sm font-bold text-white uppercase tracking-tight">360° Discovery Grid</h4>
+                        <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                          List properties with unlimited beautiful high-resolution image portfolios, direct exact coordinates, interactive video tours, RERA certificate papers, and structured carpet layout metrics.
+                        </p>
+                      </div>
+
+                      {/* Feature Item 2 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 hover:border-blue-500/20 transition-all text-left">
+                        <div className="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-400 mb-3">
+                          <Zap className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-sm font-bold text-white uppercase tracking-tight">Direct Owner Sandbox CRM</h4>
+                        <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                          Receive direct buyer leads on your custom inquiry boards with real-time browser alerts. Proactively manage client feedback loops without intermediary agencies.
+                        </p>
+                      </div>
+
+                      {/* Feature Item 3 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 hover:border-amber-500/20 transition-all text-left">
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-400 mb-3">
+                          <Server className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-sm font-bold text-white uppercase tracking-tight">Integrated Experts Console</h4>
+                        <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                          Specialized channel for home movers, interior designers, architects, and independent brokers to claim project leads, build client portfolios, and update work logs verified on blockchain.
+                        </p>
+                      </div>
+
+                      {/* Feature Item 4 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 hover:border-pink-500/20 transition-all text-left">
+                        <div className="w-9 h-9 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-400 mb-3">
+                          <Shield className="w-5 h-5" />
+                        </div>
+                        <h4 className="text-sm font-bold text-white uppercase tracking-tight">Instant Vetting System</h4>
+                        <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                          Rigorous admin oversight panel to verify uploaded land registry papers, physical broker licenses, and customer Aadhaar/KYC credentials for comprehensive transaction security.
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-white/5 flex justify-end">
+                      <button 
+                        onClick={onEnterApp}
+                        className="bg-[#00f59b] hover:bg-[#10b981] text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 uppercase transition-all"
+                      >
+                        <span>Launch Sandbox App</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. SERVICES TAB CONTENT (Real values map!) */}
+                {activeTab === 'providers' && (
+                  <div className="space-y-6">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-medium">
+                      Showing vetted, licensed service professionals active inside the Propex360 sandbox network. Each merchant has gone through rigorous physical verification.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {serviceProviders.map((provider) => (
+                        <div key={provider.id} className="bg-slate-900 border border-white/5 rounded-2xl p-4 flex gap-4 text-left hover:border-white/10 transition-all items-start relative">
+                          
+                          {/* Avatar */}
+                          <img 
+                            src={provider.avatar} 
+                            alt={provider.name} 
+                            className="w-12 h-12 rounded-xl object-cover border border-white/15"
+                          />
+
+                          {/* Detail */}
+                          <div className="space-y-1 flex-1">
+                            <span className="text-[9px] bg-blue-500/10 text-blue-400 font-extrabold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+                              {provider.category}
+                            </span>
+                            <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">
+                              {provider.name}
+                            </h4>
+                            <p className="text-[10px] text-slate-400 font-mono">
+                              💸 Pricing: {provider.priceRange}
+                            </p>
+                            <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1">
+                              <span className="flex items-center gap-1 font-bold text-amber-400">
+                                <Star className="w-3 h-3 fill-amber-400 shrink-0" /> {provider.rating} ({provider.reviewsCount} reviews)
+                              </span>
+                              <span>•</span>
+                              <span>💼 {provider.experienceYears} Years Exp</span>
+                            </div>
+                          </div>
+
+                          {/* Direct Action trigger */}
+                          <button 
+                            onClick={onEnterApp}
+                            className="absolute bottom-4 right-4 bg-white/5 hover:bg-white/10 text-white rounded-lg p-1.5 transition-all text-[10px] font-bold"
+                            title="Interactive Contact"
+                          >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-slate-500">Total Registered Specialists: 4 active</span>
+                      <button 
+                        onClick={onEnterApp}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 uppercase transition-all"
+                      >
+                        <span>Join As Provider</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. PRICING PLANS TAB CONTENT */}
+                {activeTab === 'pricing' && (
+                  <div className="space-y-6">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-medium">
+                      Upgrade listings prioritization status, get bulk client alerts or unlock professional blockchain logging tokens. All sandbox pricing features are fully simulated!
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      
+                      {/* Plan 1 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 flex flex-col justify-between text-left relative overflow-hidden">
+                        <div>
+                          <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest block">Free Starter</span>
+                          <div className="flex items-baseline gap-1 mt-2 mb-4">
+                            <span className="text-2xl sm:text-3xl font-black text-white font-display">₹0</span>
+                            <span className="text-[10px] text-slate-400 font-bold">/ forever</span>
+                          </div>
+                          <ul className="space-y-2 text-[10px] text-slate-300">
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> 1 Property listing allocation
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Standard search prioritization
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Direct peer-to-peer customer chat
+                            </li>
+                          </ul>
+                        </div>
+                        <button 
+                          onClick={onEnterApp}
+                          className="mt-6 w-full text-center py-2 bg-white/5 hover:bg-white/10 text-white font-extrabold rounded-xl transition-all text-[10px] uppercase"
+                        >
+                          ACTIVE PLAN
+                        </button>
+                      </div>
+
+                      {/* Plan 2 */}
+                      <div className="bg-slate-900 border-2 border-[#00f59b] rounded-2xl p-5 flex flex-col justify-between text-left relative overflow-hidden">
+                        <div className="absolute top-0 right-0 bg-[#00f59b] text-slate-950 text-[8px] font-black uppercase px-2 py-0.5 rounded-bl">
+                          POPULAR
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-emerald-400 font-extrabold uppercase tracking-widest block">Premium Booster</span>
+                          <div className="flex items-baseline gap-1 mt-2 mb-4">
+                            <span className="text-2xl sm:text-3xl font-black text-white font-display">₹4,999</span>
+                            <span className="text-[10px] text-slate-400 font-bold">/ monthly</span>
+                          </div>
+                          <ul className="space-y-2 text-[10px] text-slate-300">
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Unlimited properties listings
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> <strong>"Featured" Glow badge</strong>
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Priority instant SMS lead triggers
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Interactive 3D Video uploading
+                            </li>
+                          </ul>
+                        </div>
+                        <button 
+                          onClick={onEnterApp}
+                          className="mt-6 w-full text-center py-2 bg-[#00f59b] hover:bg-[#10b981] text-slate-950 font-extrabold rounded-xl transition-all text-[10px] uppercase shadow-lg shadow-[#00f59b]/25"
+                        >
+                          Simulate Upgrade
+                        </button>
+                      </div>
+
+                      {/* Plan 3 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 flex flex-col justify-between text-left relative overflow-hidden">
+                        <div>
+                          <span className="text-[9px] text-amber-400 font-extrabold uppercase tracking-widest block">Enterprise Elite</span>
+                          <div className="flex items-baseline gap-1 mt-2 mb-4">
+                            <span className="text-2xl sm:text-3xl font-black text-white font-display">₹14,999</span>
+                            <span className="text-[10px] text-slate-400 font-bold">/ monthly</span>
+                          </div>
+                          <ul className="space-y-2 text-[10px] text-slate-300">
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Bulk broker license integration
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Multi-user team CRM dashboard
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Pre-approved super admin status
+                            </li>
+                            <li className="flex items-center gap-1.5">
+                              <CheckCircle className="w-3.5 h-3.5 text-[#00f59b]" /> Direct API spreadsheet push link
+                            </li>
+                          </ul>
+                        </div>
+                        <button 
+                          onClick={onEnterApp}
+                          className="mt-6 w-full text-center py-2 bg-white/5 hover:bg-white/10 text-white font-extrabold rounded-xl transition-all text-[10px] uppercase"
+                        >
+                          Contact Enterprise
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. TESTIMONIALS TAB CONTENT */}
+                {activeTab === 'testimonials' && (
+                  <div className="space-y-6">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-medium">
+                      Listen to actual verified builders, renters, and professional partners who utilize our sandbox workflow to execute transactions with massive security.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      
+                      {/* Testimonial 1 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 text-left relative flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-1 mb-2.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                          <p className="text-[11px] text-slate-300 italic leading-relaxed font-semibold">
+                            "Bandra space agreements are a breeze of transparent clarity with direct chat. Getting my premium sea-facing apartment uploaded and approved by the Propex admin took less than 20 minutes. Highly recommended sandbox experience!"
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2.5 mt-4 pt-4 border-t border-white/5">
+                          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" className="w-8 h-8 rounded-full object-cover border border-white/10" alt="" />
+                          <div>
+                            <span className="text-xs font-bold text-white block">Ananya Sharma</span>
+                            <span className="text-[9px] text-slate-400 font-semibold block leading-none">Verified Owner, Bangalore / Mumbai</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Testimonial 2 */}
+                      <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 text-left relative flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-1 mb-2.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                          <p className="text-[11px] text-slate-300 italic leading-relaxed font-semibold">
+                            "As an independent broker in the Noida corridor, handling property listings is exceptionally tedious with double brokering and fake postings. The secure PDF deed uploads on Propex360 give buyers total assurance before booking calls!"
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2.5 mt-4 pt-4 border-t border-white/5">
+                          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" className="w-8 h-8 rounded-full object-cover border border-white/10" alt="" />
+                          <div>
+                            <span className="text-xs font-bold text-white block">Suresh Kumar</span>
+                            <span className="text-[9px] text-slate-400 font-semibold block leading-none">Real Estate Specialist • Suresh Brokerage</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              {/* Modal footer close option */}
+              <div className="px-6 py-4 bg-slate-950 border-t border-white/5 flex items-center justify-between">
+                <span className="text-[9px] text-slate-500 font-mono">Simulated Workspace Ledger 2026</span>
+                <button 
+                  onClick={() => setActiveTab(null)}
+                  className="bg-white/10 hover:bg-white/15 text-white text-[10px] uppercase font-bold px-4 py-2 rounded-xl transition-all cursor-pointer outline-none focus:outline-none"
+                >
+                  Close Panel
+                </button>
+              </div>
+
+            </motion.div>
+
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* 📥 Footer */}
       <footer className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-3 text-slate-505 text-xs text-slate-400 bg-slate-950/10">
